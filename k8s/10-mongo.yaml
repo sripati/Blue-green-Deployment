@@ -1,0 +1,84 @@
+# MongoDB: a PersistentVolumeClaim for durable storage, a Deployment running one
+# mongo:7 pod, and a ClusterIP Service named "mongo" that the backend connects to
+# via the URI  mongodb://mongo:27017/registration
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: blue-green
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # Uses minikube's default "standard" StorageClass (hostPath provisioner).
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: blue-green
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  strategy:
+    # A single RWO volume cannot be mounted by an old and a new pod at once.
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mongo
+              containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            exec:
+              command: ["mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: blue-green
+  labels:
+    app: mongo
+spec:
+  type: ClusterIP
+  selector:
+    app: mongo
+  ports:
+    - port: 27017
+      targetPort: 27017

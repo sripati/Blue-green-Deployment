@@ -1,0 +1,8 @@
+# All resources for this assignment live in a dedicated namespace so they are
+# easy to view, manage and delete as one unit.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blue-green
+  labels:
+    app.kubernetes.io/part-of: blue-green-registration

@@ -1,4 +1,16 @@
-node_modules
-Dockerfile
+# Dependencies
+node_modules/
+
+# Local environment files (do not commit secrets / machine-specific config)
 .env
-package-lock.json
+**/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+
+# NOTE: Dockerfiles, .dockerignore, docker-compose.yml, k8s manifests and
+# package-lock.json ARE tracked - they are part of the deliverable.

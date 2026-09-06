@@ -1,0 +1,72 @@
+# Runs the whole stack: MongoDB + backend API + both frontends.
+#
+#   docker compose up --build
+#
+# Host port mapping (left = host, right = container):
+#   MongoDB        27017 -> 27017
+#   Backend API     5001 -> 5000   (host 5000 is taken by macOS AirPlay Receiver)
+#   Blue frontend   3100 -> 3000
+#   Green frontend  3200 -> 3000
+#
+# Open http://localhost:3100 (Basic) or http://localhost:3200 (Enhanced).
+# Each frontend proxies /api/* to the backend over the internal Docker network,
+# so the browser only ever talks to the frontend it loaded.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: bg-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build: ./backend
+    image: bluegreen/backend:v1
+    container_name: bg-backend
+    restart: unless-stopped
+    environment:
+      PORT: "5000"
+      MONGO_URI: "mongodb://mongo:27017/registration"
+    ports:
+      - "5001:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend-blue:
+    build: ./frontend-blue
+    image: bluegreen/frontend-blue:v1
+    container_name: bg-frontend-blue
+    restart: unless-stopped
+    environment:
+      PORT: "3000"
+      BACKEND_URL: "http://backend:5000"
+    ports:
+      - "3100:3000"
+    depends_on:
+      - backend
+
+  frontend-green:
+    build: ./frontend-green
+    image: bluegreen/frontend-green:v1
+    container_name: bg-frontend-green
+    restart: unless-stopped
+    environment:
+      PORT: "3000"
+      BACKEND_URL: "http://backend:5000"
+    ports:
+      - "3200:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

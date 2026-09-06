@@ -1,0 +1,30 @@
+# THE blue-green switch.
+#
+# One stable Service. Users always hit this Service (its name, ClusterIP and
+# NodePort never change). Which colour serves the traffic is decided purely by
+# the "version" label in the selector below.
+#
+#   version: blue   -> traffic goes to the frontend-blue pods  (Basic UI)
+#   version: green  -> traffic goes to the frontend-green pods  (Enhanced UI)
+#
+# Switch by patching just that one label - see the README "Blue-Green Switching"
+# section:
+#   kubectl -n blue-green patch service frontend-service \
+#     -p '{"spec":{"selector":{"app":"frontend","version":"green"}}}'
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: blue-green
+  labels:
+    app: frontend
+spec:
+  type: NodePort
+  selector:
+    app: frontend
+    version: blue        # <-- the live colour. Patch this to switch.
+  ports:
+    - name: http
+      port: 80
+      targetPort: http   # both colour deployments expose containerPort 3000 as "http"
+      nodePort: 30080
