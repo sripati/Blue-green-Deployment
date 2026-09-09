@@ -180,6 +180,21 @@ Tear down before Part 2 (frees the ports):
 # stop the 3 node processes, then:
 docker rm -f bg-mongo
 ```
+### Services running + health checks
+<img width="649" height="308" alt="SrinatiMacRookAly Riu-reen Denlement echo _ listeners -" src="https://github.com/user-attachments/assets/e3cd7fdb-9bf2-41bb-9fac-bacefe70b742" />
+
+### Blue (Basic UI) registration form
+<img width="1467" height="821" alt="User Registration Form" src="https://github.com/user-attachments/assets/956832d3-4452-4119-b0e2-ab5295b5d5d4" />
+
+### Blue registration success
+<img width="793" height="204" alt="Register" src="https://github.com/user-attachments/assets/31124543-b06e-4e36-9a1f-bc37ba9d3fc5" />
+
+### Green (Enhanced UI) multi-step form
+<img width="1470" height="808" alt="User Registration" src="https://github.com/user-attachments/assets/8927f766-57c6-43e6-b8e5-ed737e46e920" />
+<img width="1468" height="819" alt="User Registration" src="https://github.com/user-attachments/assets/daf41313-ca4b-48be-b816-2f1c4f59c522" />
+
+### Data stored in MongoDB
+<img width="1136" height="508" alt="Pasted Graphic 6" src="https://github.com/user-attachments/assets/b3fb020b-a6ad-400d-8d83-788646f72462" />
 
 ---
 
@@ -228,6 +243,24 @@ Tear down before Part 3:
 ```bash
 docker compose down          # add -v to also wipe the mongo volume
 ```
+
+### Images built
+<img width="1081" height="125" alt="Pasted Graphic 7" src="https://github.com/user-attachments/assets/03a3c1eb-00d5-4780-9b70-f43e06b0ee2c" />
+
+### Containers running
+<img width="1312" height="126" alt="Pasted Graphic 8" src="https://github.com/user-attachments/assets/346b6667-faa1-48ec-a8e8-ce9d6d9b665a" />
+
+### Blue frontend from container
+<img width="1469" height="821" alt="Pasted Graphic 9" src="https://github.com/user-attachments/assets/72033bf9-46aa-4e83-b298-9f014b2ba0a6" />
+
+### Green frontend from container
+<img width="1466" height="818" alt="User Registration" src="https://github.com/user-attachments/assets/4812873a-acae-487e-a9b4-7673bc39b86b" />
+
+### Data persisted in the Mongo container
+<img width="1095" height="387" alt="Pasted Graphic 11" src="https://github.com/user-attachments/assets/c0832214-10bb-47f8-8cc6-d794618ba103" />
+
+### Logs proving inter-container calls
+<img width="725" height="122" alt="sripati@MacBookAir Blue-green-Deploysent docker compose logs -tall-15 backend frontend-blue" src="https://github.com/user-attachments/assets/dd2f83ba-cda7-4026-a68c-bed63d5355e5" />
 
 ---
 
@@ -307,6 +340,23 @@ kubectl -n blue-green exec deploy/mongo -- mongosh registration --quiet \
 
 Result: 7 pods `Running`, all probes passing, registrations from the cluster
 persisted in the PVC-backed MongoDB.
+
+### Cluster state
+<img width="765" height="79" alt="sripat Machookkir Blue-green-Deployment kubect  config set-context -current namespacenlue-green" src="https://github.com/user-attachments/assets/d07be843-39a7-479f-a8f4-083af7ce896b" />
+<img width="679" height="419" alt="podbackend-b5799b9db-ocm" src="https://github.com/user-attachments/assets/1088fdee-f10b-4742-8026-d7b0b285eac9" />
+<img width="1129" height="132" alt="Pasted Graphic 15" src="https://github.com/user-attachments/assets/bfc2fa7f-aa18-44e0-8b4f-1c6c541acca9" />
+
+### Health checks / readiness probes configured
+<img width="877" height="116" alt="okAir Blue-green-Deployment N kubecti-n blue-preen describe pod -" src="https://github.com/user-attachments/assets/99fa07fa-0e8c-4104-8b9b-3ca7421800e4" />
+<img width="998" height="114" alt="Pasted Graphic 17" src="https://github.com/user-attachments/assets/517fa856-2143-4b19-92f1-3e6f042b6f06" />
+<img width="941" height="168" alt="CASSNESS GATES" src="https://github.com/user-attachments/assets/fc2a6af8-3023-4b87-9796-31568d7f0fc9" />
+
+### App working in the cluster (browser)
+<img width="724" height="97" alt="IsripatisMacBookAir Blue-areen-Deployment N" src="https://github.com/user-attachments/assets/81e017fa-e9fb-4faf-bba4-489ceea1ce36" />
+<img width="1467" height="810" alt="Uger Reaistration Form" src="https://github.com/user-attachments/assets/32bc7cbd-7b6b-47e0-bace-3c4f706f7faa" />
+
+### Data persisted in the Mongo pod (with PVC)
+<img width="1066" height="164" alt="Pasted Graphic 21" src="https://github.com/user-attachments/assets/f3b4654b-c3bb-41fa-8a5d-93d5462fb4e0" />
 
 ---
 
@@ -449,48 +499,16 @@ components, and has a trivial rollback.
 | 8 | Cluster shouldn't depend on Docker Hub | Local-only assignment, images built locally | `minikube image load <image>` for all four images + `imagePullPolicy: IfNotPresent`. No registry, no push, no credentials. |
 | 9 | Mongo pod could deadlock on redeploy | A `ReadWriteOnce` PVC can't be mounted by an old and new pod at once during a rolling update | `strategy: type: Recreate` on the `mongo` Deployment. |
 
----
+### Before (blue live) - Terminal - B
+<img width="918" height="105" alt="stipetipme" src="https://github.com/user-attachments/assets/2bdccf83-327b-4533-920a-0e21ebf16df1" />
+<img width="1470" height="805" alt="User Reaistration Form" src="https://github.com/user-attachments/assets/b21a82c1-0371-4156-b247-5c405032dcf1" />
 
-## Cleanup
+### The patch (Terminal B)
+<img width="1203" height="155" alt="Pasted Graphic 24" src="https://github.com/user-attachments/assets/c76a6e2d-9040-4730-b238-0a83351619e2" />
+<img width="1470" height="822" alt="User Registration" src="https://github.com/user-attachments/assets/0d37bc44-79cc-4adf-867f-a033e13973e5" />
 
-```bash
-# Kubernetes
-kubectl delete -f k8s/          # or: kubectl delete namespace blue-green
-minikube stop                   # or: minikube delete
-
-# Docker Compose
-docker compose down -v
-
-# Local
-docker rm -f bg-mongo
-```
+### Rollback
+<img width="1366" height="272" alt="Pasted Graphic 26" src="https://github.com/user-attachments/assets/a81af558-9060-46af-a5a0-3bddb1c30370" />
 
 ---
 
-## Screenshots
-
-> Add the captured images under `screenshots/` and link them here.
-
-### Part 1 — Local deployment
-- [ ] `screenshots/01-local-services-health.png` — 3 services listening + `/health` for backend, blue, green
-- [ ] `screenshots/02-local-blue-form.png` — Basic UI (http://localhost:3100) registration + success
-- [ ] `screenshots/03-local-green-form.png` — Enhanced UI (http://localhost:3200) registration + success
-- [ ] `screenshots/04-local-mongo-data.png` — `api/users/count` + `mongosh` showing stored users
-
-### Part 2 — Containerization
-- [ ] `screenshots/05-docker-images.png` — `docker images` with the three `bluegreen/*` images
-- [ ] `screenshots/06-docker-compose-ps.png` — `docker compose ps`, all 4 services `Up (healthy)`
-- [ ] `screenshots/07-compose-frontends.png` — both UIs served from containers, registration OK
-- [ ] `screenshots/08-compose-mongo-data.png` — data persisted in the mongo container
-
-### Part 3 — Kubernetes
-- [ ] `screenshots/09-kubectl-get-all.png` — `kubectl get all -n blue-green` + pvc/ingress
-- [ ] `screenshots/10-probes.png` — `describe pod` showing Liveness/Readiness probes + pods `Ready`
-- [ ] `screenshots/11-k8s-app-browser.png` — app reached via `minikube service`, registration OK
-- [ ] `screenshots/12-k8s-mongo-data.png` — `mongosh` in the mongo pod showing stored users
-
-### Part 4 — Blue-green switch
-- [ ] `screenshots/13-switch-before-blue.png` — selector `version=blue`, endpoints = blue pods, Basic UI
-- [ ] `screenshots/14-switch-patch.png` — the `kubectl patch` command + `get endpoints` now = green pods
-- [ ] `screenshots/15-switch-after-green.png` — same URL now serving the Enhanced UI
-- [ ] `screenshots/16-switch-rollback.png` — patch back to blue, Basic UI again, `mongosh` count unchanged
