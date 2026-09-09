@@ -26,8 +26,6 @@ variants) taken from source to a **blue-green deployment on Kubernetes
 7. [Part 4 — Blue-green deployment](#part-4--blue-green-deployment)
 8. [Blue-green strategy (design write-up)](#blue-green-strategy-design-write-up)
 9. [Challenges faced and how they were solved](#challenges-faced-and-how-they-were-solved)
-10. [Cleanup](#cleanup)
-11. [Screenshots](#screenshots)
 
 ---
 
@@ -433,6 +431,18 @@ blue-green --url` running in one terminal, run the `kubectl patch` in another,
 then refresh the browser — the Basic form becomes the Enhanced wizard at the
 same address, and back again on rollback.
 
+
+### Before (blue live) - Terminal - B
+<img width="918" height="105" alt="stipetipme" src="https://github.com/user-attachments/assets/2bdccf83-327b-4533-920a-0e21ebf16df1" />
+<img width="1470" height="805" alt="User Reaistration Form" src="https://github.com/user-attachments/assets/b21a82c1-0371-4156-b247-5c405032dcf1" />
+
+### The patch (Terminal B)
+<img width="1203" height="155" alt="Pasted Graphic 24" src="https://github.com/user-attachments/assets/c76a6e2d-9040-4730-b238-0a83351619e2" />
+<img width="1470" height="822" alt="User Registration" src="https://github.com/user-attachments/assets/0d37bc44-79cc-4adf-867f-a033e13973e5" />
+
+### Rollback
+<img width="1366" height="272" alt="Pasted Graphic 26" src="https://github.com/user-attachments/assets/a81af558-9060-46af-a5a0-3bddb1c30370" />
+
 ---
 
 ## Blue-green strategy (design write-up)
@@ -498,17 +508,6 @@ components, and has a trivial rollback.
 | 7 | Verifying the switch with `kubectl port-forward svc/frontend-service` didn't reflect the patch | `port-forward` to a Service binds to **one pod chosen at start** and stays there | Verified via `minikube service` (re-proxies through the NodePort, which re-resolves endpoints) and via in-cluster `wget http://frontend-service/health` from a backend pod. |
 | 8 | Cluster shouldn't depend on Docker Hub | Local-only assignment, images built locally | `minikube image load <image>` for all four images + `imagePullPolicy: IfNotPresent`. No registry, no push, no credentials. |
 | 9 | Mongo pod could deadlock on redeploy | A `ReadWriteOnce` PVC can't be mounted by an old and new pod at once during a rolling update | `strategy: type: Recreate` on the `mongo` Deployment. |
-
-### Before (blue live) - Terminal - B
-<img width="918" height="105" alt="stipetipme" src="https://github.com/user-attachments/assets/2bdccf83-327b-4533-920a-0e21ebf16df1" />
-<img width="1470" height="805" alt="User Reaistration Form" src="https://github.com/user-attachments/assets/b21a82c1-0371-4156-b247-5c405032dcf1" />
-
-### The patch (Terminal B)
-<img width="1203" height="155" alt="Pasted Graphic 24" src="https://github.com/user-attachments/assets/c76a6e2d-9040-4730-b238-0a83351619e2" />
-<img width="1470" height="822" alt="User Registration" src="https://github.com/user-attachments/assets/0d37bc44-79cc-4adf-867f-a033e13973e5" />
-
-### Rollback
-<img width="1366" height="272" alt="Pasted Graphic 26" src="https://github.com/user-attachments/assets/a81af558-9060-46af-a5a0-3bddb1c30370" />
 
 ---
 
